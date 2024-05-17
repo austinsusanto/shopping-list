@@ -1,0 +1,20 @@
+{
+    "scripts": {
+        "start": "gunicorn shopping_list.wsgi:application --bind 0.0.0.0:$PORT --workers $WEB_CONCURRENCY",
+        "migrate": "python manage.py migrate",
+        "collectstatic": "python manage.py collectstatic --noinput --clear"
+    },
+    "deploy": {
+        "builds": [
+            {
+                "src": ".",
+                "use": "@railway/python"
+            }
+        ],
+        "run": {
+            "migrate": "python manage.py migrate",
+            "collectstatic": "python manage.py collectstatic --noinput --clear",
+            "web": "gunicorn shopping_list.wsgi:application --bind 0.0.0.0:$PORT --workers $WEB_CONCURRENCY"
+        }
+    }
+}
