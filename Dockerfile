@@ -8,9 +8,9 @@ ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
     WEB_CONCURRENCY=2
 
-# Install system packages required Django.
+# Install system packages required by Django.
 RUN apt-get update --yes --quiet && apt-get install --yes --quiet --no-install-recommends \
-&& rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 RUN addgroup --system django \
     && adduser --system --ingroup django django
@@ -24,9 +24,12 @@ COPY . .
 
 RUN python manage.py collectstatic --noinput --clear
 
+# Ensure entrypoint.sh is executable
+RUN chmod +x /app/entrypoint.sh
+
 # Run as non-root user
 RUN chown -R django:django /app
 USER django
 
-# Run application
-# CMD gunicorn shopping_list.wsgi:application
+# Specify the entrypoint script
+ENTRYPOINT ["/shopping-list/entrypoint.sh"]
